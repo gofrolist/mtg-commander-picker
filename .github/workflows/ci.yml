@@ -93,7 +93,7 @@ jobs:
         run: |
           flyctl deploy \
             --app mtg-commander-picker \
-            --image ghcr.io/gofrolist/mtg-commander-picker:latest \
+            --image ghcr.io/gofrolist/mtg-commander-picker:${{ github.sha }} \
             --config fly.toml
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
