@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './index.css';
 
-// Draft picks in color order
 const COLORS = ['White', 'Blue', 'Black', 'Red', 'Green'];
 
 export default function App() {
@@ -55,7 +54,7 @@ export default function App() {
         return r.json();
       })
       .then(() => {
-        setPicked((p) => [...p, card]);
+        setPicked((prev) => [...prev, card]);
         setStep((s) => s + 1);
       })
       .catch((e) => setError(e))
@@ -64,117 +63,118 @@ export default function App() {
 
   if (!started) {
     return (
-      <div className="p-4 text-center">
-        <h1 className="text-2xl mb-4">Enter Your Name</h1>
-        <input
-          className="border p-2 rounded w-64"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          placeholder="Your name"
-        />
-        <button
-          className="ml-2 bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={() => userName.trim() && setStarted(true)}
-        >
-          Start
-        </button>
-      </div>
-    );
-  }
-
-  if (step >= COLORS.length) {
-    return (
-      <div className="p-4 text-center">
-        <h1 className="text-2xl mb-4">Your Commanders</h1>
-        <div className="flex flex-wrap justify-center gap-4">
-          {picked.map((c) => (
-            <div key={c.name} className="w-48">
-              {c.image ? (
-                <img
-                  src={c.image}
-                  alt={c.name}
-                  className="w-full h-64 object-cover rounded"
-                />
-              ) : (
-                <div className="h-64 flex items-center justify-center bg-gray-200">
-                  No Image
-                </div>
-              )}
-              <p className="mt-2 text-center font-semibold">{c.name}</p>
-            </div>
-          ))}
-        </div>
-        <button
-          className="mt-6 bg-green-500 text-white px-4 py-2 rounded"
-          onClick={() => {
-            setStarted(false);
-            setStep(0);
-            setPicked([]);
+      <div className="p-8 text-center">
+        <h1 className="text-3xl font-bold mb-6">MTG Commander Picker</h1>
+        <form
+          className="flex flex-col items-center"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (userName.trim()) setStarted(true);
           }}
         >
-          Play Again
-        </button>
+          <input
+            className="border p-3 rounded w-72 mb-4"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            placeholder="Enter your name"
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700"
+          >
+            Start
+          </button>
+        </form>
       </div>
     );
   }
 
   const color = COLORS[step];
+  const isFinished = step >= COLORS.length;
 
   return (
-    <div className="p-4 text-center">
-      <h1 className="text-2xl mb-4">Pick a {color} Commander</h1>
+    <div className="p-8 text-center font-sans">
+      <h1 className="text-3xl font-bold mb-6">MTG Commander Picker</h1>
 
-      {loading && <div className="loader mx-auto mb-4"></div>}
+      {!isFinished && (
+        <>
+          <h2 className="text-2xl font-semibold mb-4">
+            Choose a Commander for: <span className="text-blue-600">{color}</span>
+          </h2>
 
-      {error && (
-        <div className="text-red-600 mb-4">
-          {error}
-          <button className="block mt-2 underline" onClick={() => setStep(step)}>
-            Retry
+          {loading ? (
+            <div className="text-gray-600 text-lg">Loading cards...</div>
+          ) : error ? (
+            <div className="text-red-600">
+              {error}
+              <br />
+              <button className="mt-2 underline" onClick={() => setStep(step)}>
+                Retry
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap justify-center gap-6 px-4"> {/* Flexbox container for choices with reduced card width */}
+              {choices.map((card) => (
+                <div
+                  key={card.name}
+                  className="bg-white rounded-xl shadow-md overflow-hidden w-48 cursor-pointer hover:shadow-lg transition duration-300 transform hover:scale-105" /* Card container with rounded corners and overflow hidden */
+                  onClick={() => handlePick(card)}
+                >
+                  {card.image ? (
+                    <img
+                      src={card.image}
+                      alt={card.name}
+                      className="w-full h-auto object-cover"
+                      style={{ display: 'block' }} // avoids inline spacing issue
+                      draggable={false}
+                    />
+                  ) : (
+                    <div className="w-full h-80 flex items-center justify-center bg-gray-200 text-gray-600 rounded-md"> {/* Rounded corners for placeholder */}
+                      No Image
+                    </div>
+                  )}
+                  <p className="p-2 text-center font-medium">{card.name}</p>
+                </div>
+              ))}
+            </div>
+
+          )}
+        </>
+      )}
+
+      {isFinished && (
+        <div className="text-center">
+          <h2 className="text-2xl font-semibold mb-4">Your Chosen Commanders:</h2>
+          <div className="flex flex-wrap justify-center gap-4"> {/* Flexbox container for picked cards with reduced card width */}
+            {picked.map((card) => (
+              <div
+                key={card.name}
+                className="bg-green-100 rounded-lg shadow-md overflow-hidden w-48" /* Card container with rounded corners and overflow hidden */
+              >
+                {card.image ? (
+                  <img src={card.image} alt={card.name} className="w-full h-auto object-cover" />
+                ) : (
+                  <div className="w-full h-80 flex items-center justify-center bg-gray-200 text-gray-600 rounded-md"> {/* Rounded corners for placeholder */}
+                    No Image
+                  </div>
+                )}
+                <p className="p-2 font-semibold">{card.name}</p>
+              </div>
+            ))}
+          </div>
+          <button
+            className="mt-8 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition transform hover:scale-105"
+            onClick={() => {
+              setStarted(false);
+              setStep(0);
+              setPicked([]);
+              setChoices([]);
+            }}
+          >
+            Start Over
           </button>
         </div>
       )}
-
-      {!loading && !error && (
-        <div className="flex flex-wrap justify-center gap-4">
-          {choices.map((card) => (
-            <div
-              key={card.name}
-              className="cursor-pointer w-48 shadow rounded overflow-hidden hover:shadow-lg"
-              onClick={() => handlePick(card)}
-            >
-              {card.image ? (
-                <img
-                  src={card.image}
-                  alt={card.name}
-                  className="w-full h-64 object-cover"
-                />
-              ) : (
-                <div className="h-64 flex items-center justify-center bg-gray-200">
-                  No Image
-                </div>
-              )}
-              <p className="p-2 text-center font-medium">{card.name}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Spinner CSS */}
-      <style>{`
-        .loader {
-          border: 4px solid #f3f3f3;
-          border-top: 4px solid #3498db;
-          border-radius: 50%;
-          width: 40px;
-          height: 40px;
-          animation: spin 1s linear infinite;
-          margin: 0 auto;
-        }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 }

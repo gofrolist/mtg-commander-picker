@@ -1,9 +1,24 @@
+/* 1) Tailwind base reset + preflight */
 @tailwind base;
+
+/* 2) Tailwind component classes (buttons, forms, etc) */
 @tailwind components;
+
+/* 3) Tailwind utility classes (grid, flex, spacing, colors…) */
 @tailwind utilities;
 
-/* any extra globals here */
+/* 4) Your custom overrides / globals below */
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
+  background-color: #fff;
+  /* optional */
+}
+
+/* ✅ Ensure full-width layout support */
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 100%;
 }
