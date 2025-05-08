@@ -43,3 +43,18 @@ resource "google_secret_manager_secret_version" "sheets_creds_version" {
   secret         = google_secret_manager_secret.sheets_creds.id
   secret_data_wo = base64encode(google_service_account_key.sheets_key.private_key)
 }
+
+resource "google_project_service" "sheets_api" {
+  project = "mtg-commander-picker"
+  service = "sheets.googleapis.com"
+}
+
+resource "google_project_service" "drive_api" {
+  project = "mtg-commander-picker"
+  service = "drive.googleapis.com"
+}
+
+output "sheets_sa_email" {
+  description = "The email of the Sheets Service Account"
+  value       = google_service_account.sheets_sa.email
+}

@@ -15,7 +15,7 @@ RUN pip install poetry
 
 # Copy and install backend deps
 COPY backend/pyproject.toml backend/poetry.lock* ./
-RUN poetry config virtualenvs.create false \
+RUN poetry config virtualenvs.in-project true \
     && poetry install --no-interaction
 
 # Copy backend code
@@ -31,6 +31,7 @@ WORKDIR /app
 # Copy everything from builder
 COPY --from=backend-builder /app /app
 
+ENV PATH="/app/.venv/bin:$PATH"
 # Expose the port (must match your Flask/Gunicorn bind)
 ENV PORT=8080
 EXPOSE 8080
