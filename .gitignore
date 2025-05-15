@@ -9,10 +9,11 @@ yarn-error.log*
 
 # ─── Python/Poetry (backend) ────────────────────────────────────────────────────
 /backend/.venv/
-/backend/__pycache__/
 /backend/*.py[cod]
 /backend/*.pyo
 /service-account.json
+__pycache__
+.coverage
 
 # ─── Docker / Build caches ──────────────────────────────────────────────────────
 **/buildx-cache*
