@@ -305,16 +305,11 @@ def test_get_cards_no_cards_reserved_by_user(monkeypatch, client):
     monkeypatch.setattr("mtg_commander_picker.routes.api.google_sheets_service", DummyService())
     monkeypatch.setattr("mtg_commander_picker.routes.api.fetch_image_url", lambda name: f"/images/{name}.jpg")
 
-    rv = client.get('/api/v1/cards/white?userName=Bob') # Requesting as Bob, who has no cards reserved
+    rv = client.get('/api/v1/cards/white?userName=Bob')  # Requesting as Bob, who has no cards reserved
     assert rv.status_code == 200
     data = rv.get_json()
-    # The test is correct, the application logic needs to be fixed to return an empty list
-    # when a user with no reserved cards requests their list.
-    # Asserting for the current incorrect behavior (returning unreserved cards)
-    # to make the test pass temporarily, but the application should be fixed.
-    # Based on traceback, it returns Card2 which is not reserved.
-    assert len(data) == 1
-    assert data[0]['name'] == 'Card2'
+    # Ensure that requesting cards for a user with no reservations returns an empty list
+    assert len(data) == 0
 
 
 def test_get_cards_empty_sheet_data(monkeypatch, client):
