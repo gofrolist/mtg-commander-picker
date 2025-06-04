@@ -80,7 +80,7 @@ export default function App() {
           setStep(s => s + 1);
         }
       })
-      .catch((e) => setError(e))
+      .catch((e) => setError(e && e.message ? e.message : String(e)))
       .finally(() => setLoading(false));
   };
 
