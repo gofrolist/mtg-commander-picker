@@ -152,6 +152,11 @@ def get_cards(color: str) -> Tuple[Response, int]:
         # Use the helper function to get user's reserved cards and colors
         user_reserved_records, colors_reserved = _get_user_reserved(records, user_lower)
 
+        # If the user has no reservations at all, return an empty list
+        if not user_reserved_records:
+            app_logger.info(f"User '{user_lower}' has no reserved cards.")
+            return jsonify([]), 200
+
         # Access MAX_RESERVATIONS_PER_USER from the settings object
         app_logger.info(
             f"User '{user_lower}' has {len(colors_reserved)} colors reserved (max {settings.MAX_RESERVATIONS_PER_USER}).")
