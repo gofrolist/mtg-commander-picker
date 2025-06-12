@@ -23,7 +23,7 @@ package-mode = false
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.0"
-pytest-cov = "^6.1.1"
+pytest-cov = "^6.2.1"
 pytest-dotenv = "^0.5.2"
 
 [tool.pytest.ini_options]
