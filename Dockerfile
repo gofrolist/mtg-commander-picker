@@ -7,7 +7,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # 2. Install Python deps & gather backend + built frontend
-FROM python:3.13-alpine AS backend-builder
+FROM python:3.14-alpine AS backend-builder
 WORKDIR /app
 
 # Install Poetry
@@ -29,7 +29,7 @@ COPY backend/ ./
 COPY --from=frontend-builder /app/frontend/dist /app/backend/src/mtg_commander_picker/build/
 
 # 3. Final runtime image
-FROM python:3.13-alpine
+FROM python:3.14-alpine
 WORKDIR /app
 
 # Copy everything from builder
